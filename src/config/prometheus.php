@@ -12,6 +12,7 @@ return [
         'db_query_performance' => true,
         'http_request_performance' => true,
         'application_errors' => true,
+        'job_performance' => false,
     ],
     'stages_enabled' => [
         'local' => true,

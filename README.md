@@ -10,10 +10,10 @@ Este comando publica o arquivo de configuração do pacote Prometheus PHP no dir
 ### Uso
 
 ```sh
-php artisan vendor:publish --tag=prometheus-laravel-config
+php artisan vendor:publish --tag=prometheus-php-config
 ```
 
-A opção `--tag=prometheus-laravel-config` especifica que apenas o arquivo de configuração do pacote Prometheus PHP deve ser publicado.
+A opção `--tag=prometheus-php-config` especifica que apenas o arquivo de configuração do pacote Prometheus PHP deve ser publicado.
 
 ```php
 <?php
@@ -30,6 +30,7 @@ return [
         'db_query_performance' => true,
         'http_request_performance' => true,
         'application_errors' => true,
+         'job_performance' => false,
 
     ],
     'stages_enabled' => [

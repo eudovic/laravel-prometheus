@@ -44,6 +44,13 @@ class AppMetrics
                 }
             }
 
+            if (self::isMetricEnabled('job_performance')) {
+                $jobMetrics = self::processMetrics('job_execution_seconds', $logPath, fn($m) => $m['params']['job']);
+                foreach ($jobMetrics as $metric) {
+                    $metrics .= Summary::addMetric('job_execution_seconds', $metric, 'Tempo de execução dos jobs');
+                }
+            }
+
             if (self::isLocalStorageEnabled()) {
                 LocalLogs::clear($logPath);
             }
