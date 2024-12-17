@@ -13,6 +13,13 @@ return [
         'http_request_performance' => true,
         'application_errors' => true,
         'job_performance' => false,
+
+    ],
+    'request_metrics_options' => [
+        'log_ip' => true,
+        'log_user_agent' => true,
+        'log_referer' => true,
+        'log_user_id' => true,
     ],
     'stages_enabled' => [
         'local' => true,
