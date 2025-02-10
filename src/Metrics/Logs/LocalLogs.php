@@ -50,9 +50,4 @@ class LocalLogs
         }
     }
 
-    private static function isMetricEnabled(string $metric): bool
-    {
-        $metricsEnabled = Config::get('prometheus.metrics_enabled');
-        return $metricsEnabled[$metric] ?? false;
-    }
 }
