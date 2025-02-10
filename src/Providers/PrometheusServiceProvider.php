@@ -39,7 +39,10 @@ class PrometheusServiceProvider extends ServiceProvider
         if (!isset($stagesEnabled[$appEnv]) || !$stagesEnabled[$appEnv]) {
             return;
         }
-        $this->app['router']->aliasMiddleware('auth.metric', \Eudovic\PrometheusPHP\Http\Middleware\AuthMetricMiddleware::class);
+        $this->app['router']->aliasMiddleware(
+            'auth.metric',
+            \Eudovic\PrometheusPHP\Http\Middleware\AuthMetricMiddleware::class
+        );
 
         $kernel = $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
         $kernel->pushMiddleware(\Eudovic\PrometheusPHP\Http\Middleware\LogRequestMetrics::class);

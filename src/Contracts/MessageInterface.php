@@ -2,7 +2,7 @@
 
 namespace Eudovic\PrometheusPHP\Contracts;
 
-interface MessageInterface 
+interface MessageInterface
 {
     public function setMessage(string $key, array $params, string $value): void;
 

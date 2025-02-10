@@ -1,27 +1,35 @@
 <?php
+
 namespace Eudovic\PrometheusPHP\Metrics\Logs;
 
 use Illuminate\Support\Facades\Config;
 
-class LocalLogs {
-    public static function log(string $type = 'gauge', string $key, string $value, array $params = []) {
+class LocalLogs
+{
+    public static function log(string $type, string $key, string $value, array $params = [])
+    {
+
+        if (!$type) {
+            $type = 'gauge';
+        }
 
         $filePath = storage_path('logs/query_log.json');
         if (!file_exists($filePath)) {
             file_put_contents($filePath, json_encode([]));
         }
-       
+
         $logData = json_decode(file_get_contents($filePath), true);
         $logData['app'][] = [
-            'type' => $type,     
-            'key' => $key,     
+            'type' => $type,
+            'key' => $key,
             'value' => $value,
             'params' => $params,
         ];
         file_put_contents($filePath, json_encode($logData));
     }
 
-    public static function path() {
+    public static function path()
+    {
         return config('prometheus.metrics_storage_options.local.path');
     }
 
@@ -41,7 +49,7 @@ class LocalLogs {
             file_put_contents($path, json_encode(['app' => []]));
         }
     }
-    
+
     private static function isMetricEnabled(string $metric): bool
     {
         $metricsEnabled = Config::get('prometheus.metrics_enabled');
