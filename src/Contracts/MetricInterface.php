@@ -2,9 +2,10 @@
 
 namespace Eudovic\PrometheusPHP\Contracts;
 
-interface MetricInterface {
+interface MetricInterface 
+{
    
-    function metric(string $type, string $key, string $label,array $messages);
+    function metric(string $type, string $key, string $label, array $messages);
 
     function validateType(string $type): string;
 

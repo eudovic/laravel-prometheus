@@ -5,7 +5,7 @@ namespace Eudovic\PrometheusPHP\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class MetricsTokens extends Model 
+class MetricsTokens extends Model
 {
 
     use SoftDeletes;

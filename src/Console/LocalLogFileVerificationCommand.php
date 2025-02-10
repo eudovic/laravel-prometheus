@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\File;
 class LocalLogFileVerificationCommand extends Command
 {
     protected $signature = 'eudovic:prometheus-local-log-verify';
-    protected $description = 'Verifica se o arquivo app\storage\logs\query_log.json existe, cria se necessário e pergunta se deseja apagar o conteúdo';
+    protected $description = "Verifica se o arquivo app\storage\logs\query_log.json existe," . PHP_EOL
+                        . "cria se necessário e pergunta se deseja apagar o conteúdo.";
+
 
     public function handle()
     {

@@ -24,30 +24,58 @@ class AppMetrics
             $logPath = config('prometheus.metrics_storage_options.local.path');
 
             if (self::isMetricEnabled('db_query_performance')) {
-                $dbMetrics = self::processMetrics(self::DB_QUERY_METRIC_KEY, $logPath, fn($m) => $m['params']['query']);
+                $dbMetrics = self::processMetrics(
+                    self::DB_QUERY_METRIC_KEY,
+                    $logPath,
+                    fn($m) => $m['params']['query']
+                );
                 foreach ($dbMetrics as $metric) {
-                    $metrics .= Summary::addMetric(self::DB_QUERY_METRIC_KEY, $metric, 'Tempo de execução das queries do banco de dados');
+                    $metrics .= Summary::addMetric(
+                        self::DB_QUERY_METRIC_KEY,
+                        $metric,
+                        'Tempo de execução das queries do banco de dados'
+                    );
                 }
             }
 
             if (self::isMetricEnabled('http_request_performance')) {
-                $requestMetrics = self::processMetrics(self::HTTP_REQUEST_METRIC_KEY, $logPath, fn($m) => $m['params']['path'] . ' ' . $m['params']['method']);
+                $requestMetrics = self::processMetrics(
+                    self::HTTP_REQUEST_METRIC_KEY,
+                    $logPath,
+                    fn($m) => $m['params']['path'] . ' ' . $m['params']['method']
+                );
                 foreach ($requestMetrics as $metric) {
-                    $metrics .= Summary::addMetric(self::HTTP_REQUEST_METRIC_KEY, $metric, 'Tempo de execução das requisições HTTP');
+                    $metrics .= Summary::addMetric(
+                        self::HTTP_REQUEST_METRIC_KEY,
+                        $metric,
+                        'Tempo de execução das requisições HTTP'
+                    );
                 }
             }
 
             if (self::isMetricEnabled('application_errors')) {
-                $errorMetrics = self::processMetrics(self::APP_ERROR_METRIC_KEY, $logPath, fn($m) => $m['params']['exception']);
+                $errorMetrics = self::processMetrics(
+                    self::APP_ERROR_METRIC_KEY,
+                    $logPath,
+                    fn($m) => $m['params']['exception']
+                );
                 foreach ($errorMetrics as $metric) {
                     $metrics .= Summary::addMetric(self::APP_ERROR_METRIC_KEY, $metric, 'Erros na aplicação');
                 }
             }
 
             if (self::isMetricEnabled('job_performance')) {
-                $jobMetrics = self::processMetrics('job_execution_seconds', $logPath, fn($m) => $m['params']['job']);
+                $jobMetrics = self::processMetrics(
+                    'job_execution_seconds',
+                    $logPath,
+                    fn($m) => $m['params']['job']
+                );
                 foreach ($jobMetrics as $metric) {
-                    $metrics .= Summary::addMetric('job_execution_seconds', $metric, 'Tempo de execução dos jobs');
+                    $metrics .= Summary::addMetric(
+                        'job_execution_seconds',
+                        $metric,
+                        'Tempo de execução dos jobs'
+                    );
                 }
             }
 
@@ -67,28 +95,28 @@ class AppMetrics
         if (!$logs || empty($logs['app'])) {
             return [];
         }
-    
+
         $grouped = [];
         $output = [];
         foreach ($logs['app'] as $metric) {
             if ($metric['key'] !== $metricKey) {
                 continue;
             }
-    
+
             $groupKey = $groupKeyCallback($metric);
             $grouped[$groupKey][] = [
                 'value' => $metric['value'],
                 'params' => $metric['params'],
             ];
         }
-    
+
         foreach ($grouped as $payload) {
-           $output[] = MetricsProcessor::process($metricKey, $payload);
+            $output[] = MetricsProcessor::process($metricKey, $payload);
         }
 
         return $output;
     }
-    
+
 
     public static function isMetricEnabled(string $metric): bool
     {

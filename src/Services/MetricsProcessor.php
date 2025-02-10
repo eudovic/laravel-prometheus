@@ -22,7 +22,7 @@ class MetricsProcessor
                 'key' => $metricKey,
                 'params' => array_merge([
                     'quantile' => $quantile['quantile'],
-                ],  $params),
+                ], $params),
                 'value' => $quantile['value']['value'],
             ];
         }

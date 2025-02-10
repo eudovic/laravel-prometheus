@@ -15,7 +15,7 @@ class PrometheusServiceProvider extends ServiceProvider
     public function register()
     {
         $appEnv = config('app.env');
-        
+
         $this->mergeConfigFrom(
             __DIR__ . '/../config/prometheus.php',
             'prometheus'
@@ -78,7 +78,16 @@ class PrometheusServiceProvider extends ServiceProvider
             $querySql = $query->sql;
             $querySql = str_replace('"', "'", $querySql);
             $connectionName = $query->connectionName;
-            LogMetrics::log(config('prometheus.metrics_storage'), 'summary', 'db_query_execution_seconds', $executionTime, ['query' => $querySql, 'connection' => $connectionName]);
+            LogMetrics::log(
+                config('prometheus.metrics_storage'),
+                'summary',
+                'db_query_execution_seconds',
+                $executionTime,
+                [
+                    'query' => $querySql,
+                    'connection' => $connectionName
+                ]
+            );
         });
     }
 
@@ -88,7 +97,13 @@ class PrometheusServiceProvider extends ServiceProvider
             $executionTime = $event->time / 1000;
             $job = $event->job;
             $jobName = get_class($job);
-            LogMetrics::log(config('prometheus.metrics_storage'), 'summary', 'job_execution_seconds', $executionTime, ['job' => $jobName]);
+            LogMetrics::log(
+                config('prometheus.metrics_storage'),
+                'summary',
+                'job_execution_seconds',
+                $executionTime,
+                ['job' => $jobName]
+            );
         });
     }
 }

@@ -41,34 +41,64 @@ class LogRequestMetrics
             'execution_time' => $executionTime,
         ];
 
-        if (isset($requestOptions['log_ip']) && $requestOptions['log_ip']) {
+        $this->addOptionalParams($request, $requestOptions, $params);
+
+        return $params;
+    }
+
+    private function addOptionalParams($request, $requestOptions, &$params)
+    {
+        if ($this->shouldAddLogIP($requestOptions)) {
             $params['ip'] = $request->ip();
         }
 
-        if (isset($requestOptions['log_user_agent']) && $requestOptions['log_user_agent']) {
+        if ($this->shouldAddLogUserAgent($requestOptions)) {
             $params['user_agent'] = $request->header('User-Agent');
         }
 
-        if (isset($requestOptions['log_referer']) && $requestOptions['log_referer']) {
+        if ($this->shouldAddLogReferer($requestOptions)) {
             $params['referer'] = $request->header('Referer');
         }
 
-        if (isset($requestOptions['log_user_id']) && $requestOptions['log_user_id']) {
-            $guards = array_keys(config('auth.guards'));
-            foreach ($guards as $guard) {
-                try {
-                    if ($user = auth()->guard($guard)->user()) {
-                        $params['user_id'] = $user->id;
-                        break;
-                    }
-                } catch (\Exception $e) {
-                    // Log the exception or handle it as needed
-                    Log::error("Error fetching user ID for guard {$guard}: " . $e->getMessage());
+        if ($this->shouldAddLogUserId($requestOptions)) {
+            $this->addUserIdParam($params);
+        }
+    }
+
+    private function shouldAddLogIP($requestOptions): bool
+    {
+        return isset($requestOptions['log_ip']) && $requestOptions['log_ip'];
+    }
+
+    private function shouldAddLogUserAgent($requestOptions): bool
+    {
+        return isset($requestOptions['log_user_agent']) && $requestOptions['log_user_agent'];
+    }
+
+    private function shouldAddLogReferer($requestOptions): bool
+    {
+        return isset($requestOptions['log_referer']) && $requestOptions['log_referer'];
+    }
+
+    private function shouldAddLogUserId($requestOptions): bool
+    {
+        return isset($requestOptions['log_user_id']) && $requestOptions['log_user_id'];
+    }
+
+    private function addUserIdParam(&$params)
+    {
+        $guards = array_keys(config('auth.guards'));
+        foreach ($guards as $guard) {
+            try {
+                if ($user = auth()->guard($guard)->user()) {
+                    $params['user_id'] = $user->id;
+                    break;
                 }
+            } catch (\Exception $e) {
+                // Log the exception or handle it as needed
+                Log::error("Error fetching user ID for guard {$guard}: " . $e->getMessage());
             }
         }
-
-        return $params;
     }
 
     protected function isHttpRequest($request): bool

@@ -9,10 +9,8 @@ class AuthMetricMiddleware
 {
     public function handle($request, Closure $next)
     {
-        if (config('prometheus.enable_auth_route')) {
-            if (!$this->checkToken($request)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
+        if (config('prometheus.enable_auth_route') && !$this->checkToken($request)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $next($request);

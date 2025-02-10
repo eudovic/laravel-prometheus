@@ -19,17 +19,17 @@ class Handler extends ExceptionHandler
 
     private function logErrorToPrometheus(Throwable $exception): void
     {
-        $errorMessage = substr($exception->getMessage(), 0, 200); 
+        $errorMessage = substr($exception->getMessage(), 0, 200);
         $errorClass = get_class($exception);
         $errorFile = $exception->getFile();
         $errorLine = $exception->getLine();
 
-        if(AppMetrics::isMetricEnabled('application_errors')) {
+        if (AppMetrics::isMetricEnabled('application_errors')) {
             LogMetrics::log(
-                'local', 
+                'local',
                 'gauge',
-                'application_errors', 
-                1, 
+                'application_errors',
+                1,
                 [
                     'exception' => $errorClass,
                     'file' => $errorFile,

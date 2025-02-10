@@ -13,7 +13,7 @@ class Summary extends AbstractMetric
     {
 
         $instance = new self();
-        $messages = array_map(function($metric){
+        $messages = array_map(function ($metric) {
             $message = new Message();
             $message->setMessage($metric['key'], $metric['params'], $metric['value']);
             return $message;

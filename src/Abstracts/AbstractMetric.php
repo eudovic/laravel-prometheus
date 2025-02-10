@@ -31,7 +31,14 @@ abstract class AbstractMetric implements MetricInterface, SampleObservationMetri
 
     public function validateType(string $type): string
     {
-        if (!in_array($type, [self::METRIC_TYPE_COUNTER, self::METRIC_TYPE_GAUGE, self::METRIC_TYPE_SUMMARY, self::METRIC_TYPE_HISTOGRAM])) {
+        $types = [
+            self::METRIC_TYPE_COUNTER,
+            self::METRIC_TYPE_GAUGE,
+            self::METRIC_TYPE_SUMMARY,
+            self::METRIC_TYPE_HISTOGRAM
+        ];
+
+        if (!in_array($type, $types)) {
             throw new \InvalidArgumentException('Invalid metric type.');
         }
 
