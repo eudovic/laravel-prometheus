@@ -17,7 +17,6 @@ A opção `--tag=prometheus-php-config` especifica que apenas o arquivo de confi
 
 ```php
 <?php
-
 return [
     'enable_auth_route' => true,
     'metrics_enabled' => [
@@ -30,8 +29,13 @@ return [
         'db_query_performance' => true,
         'http_request_performance' => true,
         'application_errors' => true,
-         'job_performance' => false,
-
+        'job_performance' => false,
+    ],
+    'request_metrics_options' => [
+        'log_ip' => true,
+        'log_user_agent' => true,
+        'log_referer' => true,
+        'log_user_id' => true,
     ],
     'stages_enabled' => [
         'local' => true,
@@ -43,7 +47,6 @@ return [
         'local' => [
             'path' => storage_path('logs/query_log.json'),
         ],
-        //Redis was not implemented yet
         'redis' => [
             'host' => env('REDIS_HOST'),
             'port' => env('REDIS_PORT'),
@@ -52,6 +55,7 @@ return [
         ],
     ]
 ];
+
 
 
 ````
