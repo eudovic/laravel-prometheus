@@ -1,7 +1,12 @@
 # Laravel Prometheus
-Atualmente o biblioteca apenas cria metricas pre configuradas vide arquivo de configuração, porem brevemente ela deve evoluir apra a personalização de métricas.
+
+Atualmente, a biblioteca cria métricas pré-configuradas com base no arquivo de configuração. A evolução do pacote é permitir cada vez mais personalização de métricas.
+
 ## Instalação
+
+```sh
 composer require eudovic/laravel-prometheus
+```
 
 ## Publicar o Arquivo de Configuração do Prometheus PHP
 
@@ -55,13 +60,73 @@ return [
         ],
     ]
 ];
+```
 
-
-
-````
 ## Autenticando o Endpoint
-- No arquivo de configuração passe enable_auth_route para true
-- Rode 'php artisan migrate'
-- Rode eudovic:prometheus-make-token para obter o token
+
+- No arquivo de configuração, defina `enable_auth_route` como `true`.
+- Rode `php artisan migrate`.
+- Rode `php artisan eudovic:prometheus-make-token` para obter o token.
+
+## Versionamento e Release
+
+Este projeto usa tags Git no formato SemVer (`vMAJOR.MINOR.PATCH`).
+
+Exemplo da próxima versão: `v1.2.1`.
+
+### Como criar a tag `v1.2.1`
+
+1. Garanta que você está na branch correta e com o repositório atualizado.
+
+```sh
+git checkout main
+git pull origin main
+```
+
+2. Garanta que não existem mudanças pendentes.
+
+```sh
+git status
+```
+
+3. Crie a tag anotada da versão.
+
+```sh
+git tag -a v1.2.1 -m "Release v1.2.1"
+```
+
+4. Envie a tag para o repositório remoto.
+
+```sh
+git push origin v1.2.1
+```
+
+5. (Opcional, recomendado) Publique um Release no GitHub usando essa tag.
+
+### Comandos úteis
+
+Listar tags:
+
+```sh
+git tag --list
+```
+
+Ver detalhes da tag:
+
+```sh
+git show v1.2.1
+```
+
+Excluir tag local (se criou errado):
+
+```sh
+git tag -d v1.2.1
+```
+
+Excluir tag remota:
+
+```sh
+git push origin :refs/tags/v1.2.1
+```
 
 

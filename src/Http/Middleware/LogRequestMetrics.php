@@ -4,7 +4,6 @@ namespace Eudovic\PrometheusPHP\Http\Middleware;
 
 use Closure;
 use Eudovic\PrometheusPHP\Metrics\Logs\LogMetrics;
-use Illuminate\Support\Facades\Log;
 
 class LogRequestMetrics
 {
@@ -61,7 +60,7 @@ class LogRequestMetrics
         }
 
         if ($this->shouldAddLogUserId($requestOptions)) {
-            $this->addUserIdParam($params);
+            $this->addUserIdParam($request, $params);
         }
     }
 
@@ -85,20 +84,49 @@ class LogRequestMetrics
         return isset($requestOptions['log_user_id']) && $requestOptions['log_user_id'];
     }
 
-    private function addUserIdParam(&$params)
+    private function addUserIdParam($request, &$params)
     {
         $guards = array_keys(config('auth.guards'));
+        $hasMalformedBearer = $this->hasMalformedBearerToken($request);
+
         foreach ($guards as $guard) {
+            if ($hasMalformedBearer && $this->isTokenBasedGuard($guard)) {
+                continue;
+            }
+
             try {
                 if ($user = auth()->guard($guard)->user()) {
                     $params['user_id'] = $user->id;
                     break;
                 }
-            } catch (\Exception $e) {
-                // Log the exception or handle it as needed
-                Log::error("Error fetching user ID for guard {$guard}: " . $e->getMessage());
+            } catch (\Throwable $e) {
+                // Ignore auth guard failures to avoid noisy logs for malformed bearer tokens.
+                continue;
             }
         }
+    }
+
+    private function hasMalformedBearerToken($request): bool
+    {
+        $header = $request->header('Authorization');
+
+        if (!is_string($header) || stripos($header, 'Bearer ') !== 0) {
+            return false;
+        }
+
+        $token = trim(substr($header, 7));
+        if ($token === '') {
+            return true;
+        }
+
+        return substr_count($token, '.') !== 2;
+    }
+
+    private function isTokenBasedGuard(string $guard): bool
+    {
+        $driver = config("auth.guards.{$guard}.driver");
+
+        return in_array($driver, ['passport', 'sanctum', 'token', 'jwt'], true);
     }
 
     protected function isHttpRequest($request): bool
